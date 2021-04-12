@@ -3,12 +3,10 @@
 This example will generate a Task Definition and Daemon Service for deploying the Lacework Datacollector Agent.
 
 ```
-provider "aws" {
-  region = "us-east-1"
-}
+provider "aws" {}
 
 module "lacework_ecs_datacollector" {
-  source = "../../"
+  source = "lacework/agent/ecs"
   version = "~> 0.1"
 
   ecs_cluster_name      = "Example-Cluster"
