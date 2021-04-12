@@ -9,7 +9,7 @@
 set -eou pipefail
 
 readonly org_name=lacework
-readonly project_name=terraform-ecs-agent
+readonly project_name=terraform-aws-ecs-agent
 readonly git_user="Lacework Inc."
 readonly git_email="ops+releng@lacework.net"
 VERSION=$(cat VERSION)

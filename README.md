@@ -1,4 +1,4 @@
-# terraform-ecs-agent
+# terraform-aws-ecs-agent
 
 ## Description
 

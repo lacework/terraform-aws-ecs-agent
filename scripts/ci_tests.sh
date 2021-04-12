@@ -6,7 +6,7 @@
 #
 set -eou pipefail
 
-readonly project_name=terraform-ecs-agent
+readonly project_name=terraform-aws-ecs-agent
 
 TEST_CASES=(
   examples/default
