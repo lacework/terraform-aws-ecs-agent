@@ -41,29 +41,59 @@ locals {
           "sourceVolume" : "etc_group"
         }
       ],
-      "name" : var.ecs_task_family,
+      "name" : local.ecs_task_family_name,
       "privileged" : true
     }
-  ])
+  )])
+  ecs_service_name     = length(var.ecs_service_name) > 0 ? var.ecs_service_name : "${var.resource_prefix}-service-${random_id.uniq.hex}"
+  ecs_task_family_name = length(var.ecs_task_family_name) > 0 ? var.ecs_task_family_name : "${var.resource_prefix}-task-${random_id.uniq.hex}"
+  iam_role_arn         = var.use_existing_iam_role ? var.iam_role_arn : aws_iam_role.ecs_execution[0].arn
+  iam_role_name        = (!var.use_existing_iam_role && length(var.iam_role_name) > 0) ? var.iam_role_name : "${var.resource_prefix}-role-${random_id.uniq.hex}"
 }
 
-data "aws_ecs_cluster" "ecs_cluster" {
-  cluster_name = var.ecs_cluster_name
+resource "random_id" "uniq" {
+  byte_length = 4
 }
 
-data "aws_iam_role" "ecs_task_role" {
-  name = var.ecs_task_role
+resource "aws_iam_role" "ecs_execution" {
+  count = var.use_existing_iam_role ? 0 : 1
+
+  name = local.iam_role_name
+  tags = var.iam_role_tags
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2008-10-17",
+  "Statement": [
+    {
+      "Sid": "",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "ecs-tasks.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy_attachment" "security_audit_policy_attachment" {
+  count = var.use_existing_iam_role ? 0 : 1
+
+  role       = aws_iam_role.ecs_execution[0].name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
 resource "aws_ecs_task_definition" "lacework_datacollector" {
-  family                = var.ecs_task_family
+  family                = local.ecs_task_family_name
   container_definitions = local.container_definition_json
 
   cpu    = var.ecs_cpu_for_lacework
   memory = var.ecs_mem_for_lacework
 
-  task_role_arn      = data.aws_iam_role.ecs_task_role.arn
-  execution_role_arn = data.aws_iam_role.ecs_task_role.arn
+  task_role_arn      = local.iam_role_arn
+  execution_role_arn = local.iam_role_arn
 
   network_mode = "host"
   pid_mode     = "host"
@@ -100,8 +130,8 @@ resource "aws_ecs_task_definition" "lacework_datacollector" {
 }
 
 resource "aws_ecs_service" "lacework_datacollector" {
-  name                = var.ecs_service_name
-  cluster             = data.aws_ecs_cluster.ecs_cluster.arn
+  name                = local.ecs_service_name
+  cluster             = var.ecs_cluster_arn
   scheduling_strategy = "DAEMON"
   task_definition     = aws_ecs_task_definition.lacework_datacollector.arn
 }

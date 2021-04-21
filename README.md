@@ -12,21 +12,39 @@ The `main.tf` file will configure an ECS Task Definition which will then be used
 
 The `main.tf` file will configure a daemon Service within the specified ECS Cluster which will run the Task Definition above.
 
+## Requirements
+
+| Name      | Version   |
+| --------- | --------- |
+| terraform | >= 0.12.0 |
+
+## Providers
+
+| Name   | Version |
+| ------ | ------- |
+| aws    | n/a     |
+| random | n/a     |
+
 ## Inputs
 
-| Name                  | Description                                                       | Type     | Default                    | Required |
-| --------------------- | ----------------------------------------------------------------- | -------- | -------------------------- | :------: |
-| ecs_cluster_name      | The name of the ECS cluster in which to deploy the Lacework agent | `string` | n/a                        |   yes    |
-| ecs_cpu_for_lacework  | The quantity of CPU units to assign to the task                   | `string` | `"512"`                    |    no    |
-| ecs_mem_for_lacework  | The quantity of Memory (MiB) to assign to the task                | `string` | `"512"`                    |    no    |
-| ecs_service_name      | The desired name for the Lacework agent's ECS Service             | `string` | `"lacework-datacollector"` |    no    |
-| ecs_task_family       | The desired name of the Lacework agent's ECS Task Definition      | `string` | `"lacework-datacollector"` |    no    |
-| ecs_task_role         | The name of the IAM Role to use when executing the ECS task       | `string` | `"ecsTaskExecutionRole"`   |    no    |
-| lacework_access_token | The access token for the Lacework agent                           | `string` | n/a                        |   yes    |
+| Name                  | Description                                                            | Type          | Default          | Required |
+| --------------------- | ---------------------------------------------------------------------- | ------------- | ---------------- | :------: |
+| ecs_cluster_arn       | The ARN of the ECS cluster in which to deploy the Lacework agent       | `string`      | n/a              |   yes    |
+| ecs_cpu_for_lacework  | The quantity of CPU units to assign to the task                        | `string`      | `"512"`          |    no    |
+| ecs_mem_for_lacework  | The quantity of Memory (MiB) to assign to the task                     | `string`      | `"512"`          |    no    |
+| ecs_service_name      | The desired name for the Lacework agent ECS Service                    | `string`      | `""`             |    no    |
+| ecs_task_family_name  | The desired name of the Lacework agent ECS Task Definition             | `string`      | `""`             |    no    |
+| iam_role_arn          | The IAM role ARN to use when use_existing_iam_role is `true`           | `string`      | `""`             |    no    |
+| iam_role_name         | The IAM role name to use when use_existing_iam_role is `false`         | `string`      | `""`             |    no    |
+| iam_role_tags         | The tags to apply to a created IAM role                                | `map(string)` | `{}`             |    no    |
+| lacework_access_token | The access token for the Lacework agent                                | `string`      | n/a              |   yes    |
+| resource_prefix       | A prefix that will be use at the beginning of every generated resource | `string`      | `"lacework-ecs"` |    no    |
+| use_existing_iam_role | Set this to true to use an existing IAM role                           | `bool`        | `false`          |    no    |
 
 ## Outputs
 
 | Name                                       | Description                        |
 | ------------------------------------------ | ---------------------------------- |
+| iam_role_arn                               | ARN of the IAM Role                |
 | lacework_datacollector_service_arn         | ARN of the created Service         |
 | lacework_datacollector_task_definition_arn | ARN of the created Task Definition |
