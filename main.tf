@@ -1,12 +1,22 @@
 locals {
-  container_definition_json = jsonencode([
+  access_token_json = var.use_ssm_parameter_store ? (
     {
-      "environment" : [
-        {
-          "name" : "LaceworkAccessToken",
-          "value" : var.lacework_access_token,
-        },
-      ],
+      "secrets" : [{
+        "name" : "LaceworkAccessToken",
+        "valueFrom" : local.ssm_parameter_arn
+      }]
+    }
+    ) : (
+    {
+      "environment" : [{
+        "name" : "LaceworkAccessToken",
+        "value" : var.lacework_access_token
+      }]
+    }
+  )
+  container_definition_json = jsonencode([merge(
+    local.access_token_json,
+    {
       "essential" : true,
       "image" : "lacework/datacollector",
       "mountPoints" : [
@@ -49,6 +59,7 @@ locals {
   ecs_task_family_name = length(var.ecs_task_family_name) > 0 ? var.ecs_task_family_name : "${var.resource_prefix}-task-${random_id.uniq.hex}"
   iam_role_arn         = var.use_existing_iam_role ? var.iam_role_arn : aws_iam_role.ecs_execution[0].arn
   iam_role_name        = (!var.use_existing_iam_role && length(var.iam_role_name) > 0) ? var.iam_role_name : "${var.resource_prefix}-role-${random_id.uniq.hex}"
+  ssm_parameter_arn    = (var.use_ssm_parameter_store && !var.use_existing_ssm_parameter) ? aws_ssm_parameter.lacework_access_token[0].arn : var.ssm_parameter_arn
 }
 
 resource "random_id" "uniq" {
@@ -78,19 +89,55 @@ resource "aws_iam_role" "ecs_execution" {
 EOF
 }
 
-resource "aws_iam_role_policy_attachment" "security_audit_policy_attachment" {
+resource "aws_iam_role_policy_attachment" "ecs_task_execution_policy_attachment" {
   count = var.use_existing_iam_role ? 0 : 1
 
   role       = aws_iam_role.ecs_execution[0].name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
+data "aws_iam_policy_document" "ssm_parameter_store_policy" {
+  count = (!var.use_existing_iam_role && var.use_ssm_parameter_store) ? 1 : 0
+
+  version = "2012-10-17"
+
+  statement {
+    sid       = "GetSsmParameter"
+    actions   = ["ssm:GetParameters"]
+    resources = [local.ssm_parameter_arn]
+  }
+
+  dynamic "statement" {
+    for_each = var.ssm_parameter_encrypted ? [1] : []
+    content {
+      sid       = "DecryptSsmParameter"
+      actions   = ["kms:Decrypt"]
+      resources = [var.ssm_parameter_kms_arn]
+    }
+  }
+}
+
+resource "aws_iam_policy" "ssm_parameter_store_policy" {
+  count = (!var.use_existing_iam_role && var.use_ssm_parameter_store) ? 1 : 0
+
+  name        = local.iam_role_name
+  description = "An IAM policy to allow a Lacework Agent ECS task to pull the agent access token from SSM"
+  policy      = data.aws_iam_policy_document.ssm_parameter_store_policy[0].json
+}
+
+resource "aws_iam_role_policy_attachment" "ssm_parameter_store_iam_role_policy" {
+  count = (!var.use_existing_iam_role && var.use_ssm_parameter_store) ? 1 : 0
+
+  role       = local.iam_role_name
+  policy_arn = aws_iam_policy.ssm_parameter_store_policy[0].arn
+}
+
 resource "aws_ecs_task_definition" "lacework_datacollector" {
   family                = local.ecs_task_family_name
   container_definitions = local.container_definition_json
 
-  cpu    = var.ecs_cpu_for_lacework
-  memory = var.ecs_mem_for_lacework
+  cpu    = var.lacework_task_cpu
+  memory = var.lacework_task_mem
 
   task_role_arn      = local.iam_role_arn
   execution_role_arn = local.iam_role_arn
@@ -134,4 +181,13 @@ resource "aws_ecs_service" "lacework_datacollector" {
   cluster             = var.ecs_cluster_arn
   scheduling_strategy = "DAEMON"
   task_definition     = aws_ecs_task_definition.lacework_datacollector.arn
+}
+
+resource "aws_ssm_parameter" "lacework_access_token" {
+  count = (var.use_ssm_parameter_store && !var.use_existing_ssm_parameter) ? 1 : 0
+
+  name   = var.ssm_parameter_name
+  key_id = var.ssm_parameter_kms_arn
+  type   = var.ssm_parameter_encrypted ? "SecureString" : "String"
+  value  = var.lacework_access_token
 }

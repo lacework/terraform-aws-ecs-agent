@@ -1,8 +1,6 @@
-# Default Elastic Container Service (ECS) Deployment
+# Elastic Container Service (ECS) Deployment w/ Existing IAM Role
 
-This example will generate a Task Definition and Daemon Service for deploying the Lacework Datacollector Agent.
-
-```hcl
+```
 provider "aws" {}
 
 module "lacework_ecs_datacollector" {
@@ -11,5 +9,8 @@ module "lacework_ecs_datacollector" {
 
   ecs_cluster_arn       = "arn:aws:ecs:us-east-1:123456789012:cluster/example-cluster"
   lacework_access_token = "0123456789ABCDEF0123456789ABCDEF"
+
+  use_existing_iam_role = true
+  iam_role_arn          = "arn:aws:iam::123456789012:role/lacework-ecs-role-a8c32943"
 }
 ```

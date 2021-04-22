@@ -11,32 +11,20 @@ variable "ecs_service_name" {
 
 variable "ecs_task_family_name" {
   type        = string
-  description = "The desired name of the Lacework agent ECS Task Definition"
+  description = "The desired name for the Lacework agent ECS Task Definition"
   default     = ""
-}
-
-variable "ecs_cpu_for_lacework" {
-  type        = string
-  description = "The quantity of CPU units to assign to the task"
-  default     = "512"
-}
-
-variable "ecs_mem_for_lacework" {
-  type        = string
-  description = "The quantity of Memory (MiB) to assign to the task"
-  default     = "512"
 }
 
 variable "iam_role_arn" {
   type        = string
   default     = ""
-  description = "The IAM role ARN to use when use_existing_iam_role is `true`"
+  description = "The IAM role ARN to use when `use_existing_iam_role` is `true`"
 }
 
 variable "iam_role_name" {
   type        = string
   default     = ""
-  description = "The IAM role name to use when use_existing_iam_role is `false`"
+  description = "The IAM role name to use when `use_existing_iam_role` is `false`"
 }
 
 variable "iam_role_tags" {
@@ -50,14 +38,62 @@ variable "lacework_access_token" {
   description = "The access token for the Lacework agent"
 }
 
+variable "lacework_task_cpu" {
+  type        = string
+  description = "The quantity of CPU units to assign to the task"
+  default     = "512"
+}
+
+variable "lacework_task_mem" {
+  type        = string
+  description = "The quantity of Memory (MiB) to assign to the task"
+  default     = "512"
+}
+
 variable "resource_prefix" {
   type        = string
   default     = "lacework-ecs"
   description = "A prefix that will be use at the beginning of every generated resource"
 }
 
+variable "ssm_parameter_arn" {
+  type        = string
+  default     = ""
+  description = "The SSM parameter ARN to use when `use_existing_ssm_parameter` is `true`"
+}
+
+variable "ssm_parameter_encrypted" {
+  type        = bool
+  default     = false
+  description = "Set this to `true` if the SSM parameter is/should be encrypted"
+}
+
+variable "ssm_parameter_kms_arn" {
+  type        = string
+  default     = ""
+  description = "The ARN of the KMS key to use when `ssm_parameter_encrypted` is `true`"
+}
+
+variable "ssm_parameter_name" {
+  type        = string
+  default     = "/lacework/access_token"
+  description = "The name to use for the Lacework agent access token when using SSM"
+}
+
 variable "use_existing_iam_role" {
   type        = bool
   default     = false
-  description = "Set this to true to use an existing IAM role"
+  description = "Set this to `true` to use an existing IAM role"
+}
+
+variable "use_existing_ssm_parameter" {
+  type        = bool
+  default     = false
+  description = "Set this to `true` to use an existing SSM parameter"
+}
+
+variable "use_ssm_parameter_store" {
+  type        = bool
+  default     = false
+  description = "Set this to `true` to use SSM to store the Lacework agent access token"
 }
