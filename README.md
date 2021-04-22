@@ -57,3 +57,4 @@ The `main.tf` file will configure a daemon Service within the specified ECS Clus
 | iam_role_arn                               | ARN of the IAM Role                |
 | lacework_datacollector_service_arn         | ARN of the created Service         |
 | lacework_datacollector_task_definition_arn | ARN of the created Task Definition |
+| ssm_parameter_arn                          | The ARN of the SSM Parameter       |

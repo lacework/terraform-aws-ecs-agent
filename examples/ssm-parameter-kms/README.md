@@ -4,7 +4,7 @@
 provider "aws" {}
 
 module "lacework_ecs_datacollector" {
-  source = "lacework/agent/ecs"
+  source = "lacework/ecs-agent/aws"
   version = "~> 0.1"
 
   ecs_cluster_arn       = "arn:aws:ecs:us-east-1:123456789012:cluster/example-cluster"
@@ -13,6 +13,5 @@ module "lacework_ecs_datacollector" {
   use_ssm_parameter_store = true
   ssm_parameter_encrypted = true
   ssm_parameter_kms_arn   = "arn:aws:kms:us-east-1:123456789012:key/6e2010aa-27e4-49c6-8887-956abc1caeb9"
-
 }
 ```
