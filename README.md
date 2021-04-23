@@ -17,9 +17,9 @@ The `main.tf` file will configure a daemon Service within the specified ECS Clus
 
 ## Requirements
 
-| Name      | Version   |
-| --------- | --------- |
-| terraform | >= 0.12.0 |
+| Name      | Version    |
+| --------- | ---------- |
+| terraform | >= 0.12.26 |
 
 ## Providers
 
