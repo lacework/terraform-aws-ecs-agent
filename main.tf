@@ -129,7 +129,7 @@ resource "aws_iam_role_policy_attachment" "ssm_parameter_store_iam_role_policy" 
   count = (!var.use_existing_iam_role && var.use_ssm_parameter_store) ? 1 : 0
 
   role       = local.iam_role_name
-  policy_arn = aws_iam_policy.ssm_parameter_store_policy[0].arn
+  policy_arn = aws_iam_policy.ssm_parameter_store_policy[count.index].arn
 }
 
 resource "aws_ecs_task_definition" "lacework_datacollector" {
