@@ -92,7 +92,7 @@ EOF
 resource "aws_iam_role_policy_attachment" "ecs_task_execution_policy_attachment" {
   count = var.use_existing_iam_role ? 0 : 1
 
-  role       = aws_iam_role.ecs_execution[0].name
+  role       = aws_iam_role.ecs_execution[count.index].name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
