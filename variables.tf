@@ -86,12 +86,6 @@ variable "use_existing_iam_role" {
   description = "Set this to `true` to use an existing IAM role"
 }
 
-variable "use_existing_ssm_parameter" {
-  type        = bool
-  default     = false
-  description = "Set this to `true` to use an existing SSM parameter"
-}
-
 variable "use_ssm_parameter_store" {
   type        = bool
   default     = false
