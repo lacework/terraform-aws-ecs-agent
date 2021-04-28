@@ -122,7 +122,7 @@ resource "aws_iam_policy" "ssm_parameter_store_policy" {
 
   name        = local.iam_role_name
   description = "An IAM policy to allow a Lacework Agent ECS task to pull the agent access token from SSM"
-  policy      = data.aws_iam_policy_document.ssm_parameter_store_policy[0].json
+  policy      = data.aws_iam_policy_document.ssm_parameter_store_policy[count.index].json
 }
 
 resource "aws_iam_role_policy_attachment" "ssm_parameter_store_iam_role_policy" {
