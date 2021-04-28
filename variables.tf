@@ -59,7 +59,7 @@ variable "resource_prefix" {
 variable "ssm_parameter_arn" {
   type        = string
   default     = ""
-  description = "The SSM parameter ARN to use when `use_existing_ssm_parameter` is `true`"
+  description = "An existing SSM parameter ARN. Can be used when `use_ssm_parameter_store` is `true`"
 }
 
 variable "ssm_parameter_encrypted" {
