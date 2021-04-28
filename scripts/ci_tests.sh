@@ -6,10 +6,15 @@
 #
 set -eou pipefail
 
-readonly project_name=terraform-<PROVIDER>-<NAME>
+readonly project_name=terraform-aws-ecs-agent
 
 TEST_CASES=(
   examples/default
+  examples/existing-iam-role
+  examples/existing-ssm-parameter
+  examples/existing-ssm-parameter-kms
+  examples/ssm-parameter
+  examples/ssm-parameter-kms
 )
 
 log() {
