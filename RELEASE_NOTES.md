@@ -1,8 +1,7 @@
 # Release Notes
-Another day, another release. These are the release notes for the version `v0.2.0`.
+Another day, another release. These are the release notes for the version `v0.2.1`.
 
-## Features
-* feat: initial implementation of ECS Terraform Module (#1) (Alan Nix)([484f797](https://github.com/lacework/terraform-aws-ecs-agent/commit/484f7978ba2792c51e490d19f4cbd12035078475))
+## Documentation Updates
+* docs: fix release badge in README.md (#5) (Salim Afiune)([6161133](https://github.com/lacework/terraform-aws-ecs-agent/commit/61611339466ac655ebf7ece89613f4e16e19517c))
 ## Other Changes
-* chore: apply Terraform Module scaffolding (#2) (Salim Afiune)([cfc2772](https://github.com/lacework/terraform-aws-ecs-agent/commit/cfc2772bff5d7aaaef53d156e9998466d4363b51))
-* ci: fix finding major versions during release (#3) (Salim Afiune)([b8faf35](https://github.com/lacework/terraform-aws-ecs-agent/commit/b8faf35087278fa06a275db3b2ce479ae5278cc1))
+* chore: version bump to v0.2.1-dev (Lacework)([8490399](https://github.com/lacework/terraform-aws-ecs-agent/commit/849039951a223e486717c7d15c691a38969142c6))
