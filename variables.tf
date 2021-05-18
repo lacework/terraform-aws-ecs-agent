@@ -38,6 +38,12 @@ variable "lacework_access_token" {
   description = "The access token for the Lacework agent"
 }
 
+variable "lacework_server_url" {
+  type        = string
+  default     = ""
+  description = "The server URL for the Lacework agent"
+}
+
 variable "lacework_task_cpu" {
   type        = string
   description = "The quantity of CPU units to assign to the task"

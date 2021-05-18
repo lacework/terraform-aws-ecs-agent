@@ -1,21 +1,30 @@
 locals {
-  access_token_json = var.use_ssm_parameter_store ? (
-    {
-      "secrets" : [{
-        "name" : "LaceworkAccessToken",
-        "valueFrom" : local.ssm_parameter_arn
-      }]
-    }
-    ) : (
-    {
-      "environment" : [{
-        "name" : "LaceworkAccessToken",
-        "value" : var.lacework_access_token
-      }]
-    }
-  )
+  access_token_json = var.use_ssm_parameter_store ? ({
+    "secrets" : [
+      { "name" : "LaceworkAccessToken", "valueFrom" : local.ssm_parameter_arn }
+    ]
+    }) : ({
+    "environment" : [
+      { "name" : "LaceworkAccessToken", "value" : var.lacework_access_token }
+    ]
+  })
+
+  server_url_json = length(var.lacework_server_url) > 0 ? (
+    var.use_ssm_parameter_store ? ({
+      "environment" : [
+        { "name" : "LaceworkServerUrl", "value" : var.lacework_server_url }
+      ]
+      }) : ({
+      "environment" : [
+        { "name" : "LaceworkAccessToken", "value" : var.lacework_access_token },
+        { "name" : "LaceworkServerUrl", "value" : var.lacework_server_url }
+      ]
+    })
+  ) : ({})
+
   container_definition_json = jsonencode([merge(
     local.access_token_json,
+    local.server_url_json,
     {
       "essential" : true,
       "image" : "lacework/datacollector",
