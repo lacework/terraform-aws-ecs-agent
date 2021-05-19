@@ -1,5 +1,5 @@
 locals {
-  access_token_secret_json = var.use_ssm_parameter_store ? ({
+  secrets_json = var.use_ssm_parameter_store ? ({
     "secrets" : [
       { "name" : "LaceworkAccessToken", "valueFrom" : local.ssm_parameter_arn }
     ]
@@ -17,7 +17,7 @@ locals {
   }
 
   container_definition_json = jsonencode([merge(
-    local.access_token_secret_json,
+    local.secrets_json,
     local.environment_json,
     {
       "essential" : true,
