@@ -6,14 +6,14 @@ locals {
   }) : ({})
 
   environment_json = {
-    "environment" : [merge(
-      (! var.use_ssm_parameter_store) ? ({
+    "environment" : flatten([
+      (!var.use_ssm_parameter_store) ? ([{
         "name" : "LaceworkAccessToken", "value" : var.lacework_access_token
-      }) : ({}),
-      length(var.lacework_server_url) > 0 ? ({
+      }]) : ([]),
+      length(var.lacework_server_url) > 0 ? ([{
         "name" : "LaceworkServerUrl", "value" : var.lacework_server_url
-      }) : ({}),
-    )]
+      }]) : ([]),
+    ])
   }
 
   container_definition_json = jsonencode([merge(
@@ -61,7 +61,7 @@ locals {
   ecs_service_name     = length(var.ecs_service_name) > 0 ? var.ecs_service_name : "${var.resource_prefix}-service-${random_id.uniq.hex}"
   ecs_task_family_name = length(var.ecs_task_family_name) > 0 ? var.ecs_task_family_name : "${var.resource_prefix}-task-${random_id.uniq.hex}"
   iam_role_arn         = var.use_existing_iam_role ? var.iam_role_arn : aws_iam_role.ecs_execution[0].arn
-  iam_role_name        = (! var.use_existing_iam_role && length(var.iam_role_name) > 0) ? var.iam_role_name : "${var.resource_prefix}-role-${random_id.uniq.hex}"
+  iam_role_name        = (!var.use_existing_iam_role && length(var.iam_role_name) > 0) ? var.iam_role_name : "${var.resource_prefix}-role-${random_id.uniq.hex}"
   ssm_parameter_arn    = (var.use_ssm_parameter_store && length(var.ssm_parameter_arn) > 0) ? var.ssm_parameter_arn : aws_ssm_parameter.lacework_access_token[0].arn
 }
 
@@ -100,7 +100,7 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution_policy_attachment"
 }
 
 data "aws_iam_policy_document" "ssm_parameter_store_policy" {
-  count = (! var.use_existing_iam_role && var.use_ssm_parameter_store) ? 1 : 0
+  count = (!var.use_existing_iam_role && var.use_ssm_parameter_store) ? 1 : 0
 
   version = "2012-10-17"
 
@@ -121,7 +121,7 @@ data "aws_iam_policy_document" "ssm_parameter_store_policy" {
 }
 
 resource "aws_iam_policy" "ssm_parameter_store_policy" {
-  count = (! var.use_existing_iam_role && var.use_ssm_parameter_store) ? 1 : 0
+  count = (!var.use_existing_iam_role && var.use_ssm_parameter_store) ? 1 : 0
 
   name        = local.iam_role_name
   description = "An IAM policy to allow a Lacework Agent ECS task to pull the agent access token from SSM"
@@ -129,7 +129,7 @@ resource "aws_iam_policy" "ssm_parameter_store_policy" {
 }
 
 resource "aws_iam_role_policy_attachment" "ssm_parameter_store_iam_role_policy" {
-  count = (! var.use_existing_iam_role && var.use_ssm_parameter_store) ? 1 : 0
+  count = (!var.use_existing_iam_role && var.use_ssm_parameter_store) ? 1 : 0
 
   role       = local.iam_role_name
   policy_arn = aws_iam_policy.ssm_parameter_store_policy[count.index].arn
