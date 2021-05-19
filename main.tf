@@ -5,22 +5,16 @@ locals {
     ]
   }) : ({})
 
-  environment_json = (!var.use_ssm_parameter_store) ? (
-    length(var.lacework_server_url) > 0 ? ({
-      "environment" : [
-        { "name" : "LaceworkAccessToken", "value" : var.lacework_access_token },
-        { "name" : "LaceworkServerUrl", "value" : var.lacework_server_url }
-      ]
-      }) : ({
-      "environment" : [{ "name" : "LaceworkAccessToken", "value" : var.lacework_access_token }]
-    })
-    ) : (
-    length(var.lacework_server_url) > 0 ? ({
-      "environment" : [{ "name" : "LaceworkServerUrl", "value" : var.lacework_server_url }]
-      }) : ({
-      "environment" : []
-    })
-  )
+  environment_json = {
+    "environment" : flatten([
+      (!var.use_ssm_parameter_store) ? ([{
+        "name" : "LaceworkAccessToken", "value" : var.lacework_access_token
+      }]) : ([]),
+      length(var.lacework_server_url) > 0 ? ([{
+        "name" : "LaceworkServerUrl", "value" : var.lacework_server_url
+      }]) : ([]),
+    ])
+  }
 
   container_definition_json = jsonencode([merge(
     local.secrets_json,
