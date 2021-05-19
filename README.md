@@ -19,7 +19,7 @@ The `main.tf` file will configure a daemon Service within the specified ECS Clus
 
 | Name      | Version    |
 | --------- | ---------- |
-| terraform | >= 0.12.26 |
+| terraform | >= 0.12.31 |
 
 ## Providers
 
@@ -39,6 +39,7 @@ The `main.tf` file will configure a daemon Service within the specified ECS Clus
 | iam_role_name           | The IAM role name to use when `use_existing_iam_role` is `false`                    | `string`      | `""`                       |    no    |
 | iam_role_tags           | The tags to apply to a created IAM role                                             | `map(string)` | `{}`                       |    no    |
 | lacework_access_token   | The access token for the Lacework agent                                             | `string`      | n/a                        |   yes    |
+| lacework_server_url     | The server URL for the Lacework agent                                               | `string`      | `""`                       |    no    |
 | lacework_task_cpu       | The quantity of CPU units to assign to the task                                     | `string`      | `"512"`                    |    no    |
 | lacework_task_mem       | The quantity of Memory (MiB) to assign to the task                                  | `string`      | `"512"`                    |    no    |
 | resource_prefix         | A prefix that will be use at the beginning of every generated resource              | `string`      | `"lacework-ecs"`           |    no    |
