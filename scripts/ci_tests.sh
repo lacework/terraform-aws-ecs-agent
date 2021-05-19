@@ -10,6 +10,7 @@ readonly project_name=terraform-aws-ecs-agent
 
 TEST_CASES=(
   examples/default
+  examples/server-url
   examples/existing-iam-role
   examples/existing-ssm-parameter
   examples/existing-ssm-parameter-kms
