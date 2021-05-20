@@ -1,4 +1,4 @@
-# Elastic Container Service (ECS) Deployment w/ SSM Parameter
+# Elastic Container Service (ECS) Deployment w/ Server URL
 
 ```hcl
 provider "aws" {}
