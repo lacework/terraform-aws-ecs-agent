@@ -1,10 +1,10 @@
-# Elastic Container Service (ECS) Deployment w/ SSM Parameter
+# Elastic Container Service (ECS) Deployment w/ Server URL
 
 ```hcl
 provider "aws" {}
 
 module "lacework_ecs_datacollector" {
-  source = "lacework/ecs-agent/aws"
+  source  = "lacework/ecs-agent/aws"
   version = "~> 0.1"
 
   ecs_cluster_arn       = "arn:aws:ecs:us-east-1:123456789012:cluster/example-cluster"
