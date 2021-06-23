@@ -62,7 +62,7 @@ locals {
   ecs_task_family_name = length(var.ecs_task_family_name) > 0 ? var.ecs_task_family_name : "${var.resource_prefix}-task-${random_id.uniq.hex}"
   iam_role_arn         = var.use_existing_iam_role ? var.iam_role_arn : aws_iam_role.ecs_execution[0].arn
   iam_role_name        = (!var.use_existing_iam_role && length(var.iam_role_name) > 0) ? var.iam_role_name : "${var.resource_prefix}-role-${random_id.uniq.hex}"
-  ssm_parameter_arn    = (var.use_ssm_parameter_store && length(var.ssm_parameter_arn) > 0) ? var.ssm_parameter_arn : aws_ssm_parameter.lacework_access_token[0].arn
+  ssm_parameter_arn    = var.use_ssm_parameter_store ? (length(var.ssm_parameter_arn) > 0 ? var.ssm_parameter_arn : aws_ssm_parameter.lacework_access_token[0].arn) : ""
 }
 
 resource "random_id" "uniq" {
@@ -188,7 +188,7 @@ resource "aws_ecs_service" "lacework_datacollector" {
 }
 
 resource "aws_ssm_parameter" "lacework_access_token" {
-  count = (var.use_ssm_parameter_store && length(var.ssm_parameter_arn) > 0) ? 0 : 1
+  count = (var.use_ssm_parameter_store && length(var.ssm_parameter_arn) == 0) ? 1 : 0
 
   name   = var.ssm_parameter_name
   key_id = var.ssm_parameter_kms_arn
