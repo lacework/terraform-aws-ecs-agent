@@ -33,6 +33,7 @@ The `main.tf` file will configure a daemon Service within the specified ECS Clus
 | Name                    | Description                                                                         | Type          | Default                    | Required |
 | ----------------------- | ----------------------------------------------------------------------------------- | ------------- | -------------------------- | :------: |
 | ecs_cluster_arn         | The ARN of the ECS cluster in which to deploy the Lacework agent                    | `string`      | n/a                        |   yes    |
+| ecs_launch_type         | The desired launch type for the Lacework agent ECS Service                          | `string`      | `"EC2"`                    |    no    |
 | ecs_service_name        | The desired name for the Lacework agent ECS Service                                 | `string`      | `""`                       |    no    |
 | ecs_task_family_name    | The desired name for the Lacework agent ECS Task Definition                         | `string`      | `""`                       |    no    |
 | iam_role_arn            | The IAM role ARN to use when `use_existing_iam_role` is `true`                      | `string`      | `""`                       |    no    |
