@@ -183,6 +183,7 @@ resource "aws_ecs_service" "lacework_datacollector" {
   name                = local.ecs_service_name
   cluster             = var.ecs_cluster_arn
   scheduling_strategy = "DAEMON"
+  launch_type         = var.ecs_launch_type
   task_definition     = aws_ecs_task_definition.lacework_datacollector.arn
 }
 

@@ -3,6 +3,12 @@ variable "ecs_cluster_arn" {
   description = "The ARN of the ECS cluster in which to deploy the Lacework agent"
 }
 
+variable "ecs_launch_type" {
+  type        = string
+  description = "The desired launch type for the Lacework agent ECS Service"
+  default     = "EC2"
+}
+
 variable "ecs_service_name" {
   type        = string
   description = "The desired name for the Lacework agent ECS Service"
