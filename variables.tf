@@ -44,6 +44,12 @@ variable "lacework_access_token" {
   description = "The access token for the Lacework agent"
 }
 
+variable "lacework_datacollector_image" {
+  type        = string
+  description = "The image used to deploy the Lacework datacollector."
+  default     = "lacework/datacollector:latest"
+}
+
 variable "lacework_server_url" {
   type        = string
   default     = ""
