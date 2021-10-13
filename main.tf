@@ -21,7 +21,7 @@ locals {
     local.environment_json,
     {
       "essential" : true,
-      "image" : "lacework/datacollector",
+      "image" : "${var.lacework_datacollector_image}",
       "mountPoints" : [
         {
           "readOnly" : true,
