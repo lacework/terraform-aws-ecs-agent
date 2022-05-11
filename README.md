@@ -17,16 +17,16 @@ The `main.tf` file will configure a daemon Service within the specified ECS Clus
 
 ## Requirements
 
-| Name      | Version    |
-| --------- | ---------- |
-| terraform | >= 0.12.31 |
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.14 |
 
 ## Providers
 
-| Name   | Version |
-| ------ | ------- |
-| aws    | n/a     |
-| random | n/a     |
+| Name | Version |
+|------|---------|
+| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
+| <a name="provider_random"></a> [random](#provider\_random) | n/a |
 
 ## Inputs
 
