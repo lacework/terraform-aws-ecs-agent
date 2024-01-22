@@ -21,7 +21,7 @@ locals {
     local.environment_json,
     {
       "essential" : true,
-      "image" : "${var.lacework_datacollector_image}",
+      "image" : var.lacework_datacollector_image,
       "mountPoints" : [
         {
           "readOnly" : true,
@@ -63,6 +63,10 @@ locals {
   iam_role_arn         = var.use_existing_iam_role ? var.iam_role_arn : aws_iam_role.ecs_execution[0].arn
   iam_role_name        = (!var.use_existing_iam_role && length(var.iam_role_name) > 0) ? var.iam_role_name : "${var.resource_prefix}-role-${random_id.uniq.hex}"
   ssm_parameter_arn    = var.use_ssm_parameter_store ? (length(var.ssm_parameter_arn) > 0 ? var.ssm_parameter_arn : aws_ssm_parameter.lacework_access_token[0].arn) : ""
+
+  version_file   = "${abspath(path.module)}/VERSION"
+  module_name    = basename(abspath(path.module))
+  module_version = fileexists(local.version_file) ? file(local.version_file) : ""
 }
 
 resource "random_id" "uniq" {
@@ -194,4 +198,9 @@ resource "aws_ssm_parameter" "lacework_access_token" {
   key_id = var.ssm_parameter_kms_arn
   type   = var.ssm_parameter_encrypted ? "SecureString" : "String"
   value  = var.lacework_access_token
+}
+
+data "lacework_metric_module" "lwmetrics" {
+  name    = local.module_name
+  version = local.module_version
 }
