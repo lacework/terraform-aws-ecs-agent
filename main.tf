@@ -65,7 +65,7 @@ locals {
   ssm_parameter_arn    = var.use_ssm_parameter_store ? (length(var.ssm_parameter_arn) > 0 ? var.ssm_parameter_arn : aws_ssm_parameter.lacework_access_token[0].arn) : ""
 
   version_file   = "${abspath(path.module)}/VERSION"
-  module_name    = basename(abspath(path.module))
+  module_name    = "terraform-aws-ecs-agent"
   module_version = fileexists(local.version_file) ? file(local.version_file) : ""
 }
 
