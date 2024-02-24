@@ -109,3 +109,9 @@ variable "use_ssm_parameter_store" {
   default     = false
   description = "Set this to `true` to use SSM to store the Lacework agent access token"
 }
+
+variable "lacework_config" {
+  type = string
+  default = null
+  description = "The Lacework agent configuration in JSON format"
+}
