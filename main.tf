@@ -13,6 +13,9 @@ locals {
       length(var.lacework_server_url) > 0 ? ([{
         "name" : "LaceworkServerUrl", "value" : var.lacework_server_url
       }]) : ([]),
+      var.lacework_config != null ? ([{
+        "name" : "LaceworkConfig", "value" : var.lacework_config
+      }]) : ([]),
     ])
   }
 
