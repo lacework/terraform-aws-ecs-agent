@@ -1,7 +1,5 @@
 provider "aws" {}
 
-provider "lacework" {}
-
 resource "lacework_agent_access_token" "ecs" {
   name        = "prod"
   description = "ecs deployment for production env"
